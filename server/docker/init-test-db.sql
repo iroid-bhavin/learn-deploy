@@ -1,0 +1,1 @@
+CREATE DATABASE resource_booking_test;

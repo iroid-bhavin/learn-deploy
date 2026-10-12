@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    # Local development database; the password is a throwaway default.
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: resource_booking
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./server/docker/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d resource_booking"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  server:
+    build: ./server
+    # Dev-only demo values; in production these come from a secret manager.
+    environment:
+      PORT: 8000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: resource_booking
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: my_super_secret_key
+      ADMIN_EMAIL: admin@gmail.com
+      ADMIN_PASSWORD: Admin@1234
+    ports:
+      - "${SERVER_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: http://localhost:${SERVER_PORT:-8000}/api
+    ports:
+      - "${CLIENT_PORT:-5173}:80"
+    depends_on:
+      - server
+
+volumes:
+  pgdata:
