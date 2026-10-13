@@ -10,7 +10,7 @@ With Docker (Postgres included):
 docker compose up --build
 ```
 
-Open http://localhost:5173 and sign up. The API runs on http://localhost:8000. The database is created, constrained and seeded on startup. An admin account (`admin@example.com` / `Admin@1234`) is seeded too; only admins can create or edit resources and availability.
+Open http://localhost:5173 and sign up. The API runs on http://localhost:8000. The database is created, constrained and seeded on startup. An admin account (`admin@gmail.com` / `Admin@1234`) is seeded too; only admins can create or edit resources and availability.
 
 Without Docker, copy `server/.env.example` to `server/.env` and `client/.env.example` to `client/.env`, then:
 

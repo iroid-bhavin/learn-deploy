@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 
 import AuthRouter from "./routes/auth.route";
@@ -35,7 +35,7 @@ app.use((req: Request, res: Response) => {
 
 // Errors raised outside controllers, e.g. malformed JSON bodies.
 app.use(
-  (error: any, req: Request, res: Response) => {
+  (error: any, req: Request, res: Response, _next: NextFunction) => {
     const status = error.status === 400 ? 400 : 500;
     res.status(status).send({
       success: false,

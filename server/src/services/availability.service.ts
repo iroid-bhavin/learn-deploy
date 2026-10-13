@@ -40,7 +40,19 @@ export const toDayOfWeek = (day: DateTime) => day.weekday % 7;
 const resolveLocalTime = (day: DateTime, time: string) => {
   const [hour, minute, second = 0] = time.split(":").map(Number);
 
-  return day.set({ hour, minute, second, millisecond: 0 });
+  const resolved = day.set({ hour, minute, second, millisecond: 0 });
+
+  if (resolved.hour === hour && resolved.minute === minute) {
+    return resolved;
+  }
+
+  let jump = resolved;
+
+  while (jump.minus({ minutes: 1 }).offset === resolved.offset) {
+    jump = jump.minus({ minutes: 1 });
+  }
+
+  return jump;
 };
 
 export const generateSlots = (
